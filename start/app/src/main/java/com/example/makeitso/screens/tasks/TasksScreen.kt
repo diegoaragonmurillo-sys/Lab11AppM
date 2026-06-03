@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.makeitso.R.drawable as AppIcon
 import com.example.makeitso.R.string as AppText
 import com.example.makeitso.common.composable.ActionToolbar
@@ -42,7 +43,10 @@ fun TasksScreen(
   openScreen: (String) -> Unit,
   viewModel: TasksViewModel = hiltViewModel()
 ) {
+  val tasks = viewModel.tasks.collectAsStateWithLifecycle(emptyList())
   TasksScreenContent(
+    tasks = tasks.value,
+    options = viewModel.options.value,
     onAddClick = viewModel::onAddClick,
     onSettingsClick = viewModel::onSettingsClick,
     onTaskCheckChange = viewModel::onTaskCheckChange,
@@ -57,6 +61,8 @@ fun TasksScreen(
 @Composable
 @ExperimentalMaterialApi
 fun TasksScreenContent(
+  tasks: List<Task> = emptyList(),      // <--- CAMBIO 3: Recibimos la lista de tareas
+  options: List<String> = emptyList(),
   modifier: Modifier = Modifier,
   onAddClick: ((String) -> Unit) -> Unit,
   onSettingsClick: ((String) -> Unit) -> Unit,
